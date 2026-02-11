@@ -92,3 +92,24 @@ Despite its simplicity, there are really many different mechanics in this game, 
 ![26539](https://user-images.githubusercontent.com/14840708/139321183-89ad36ec-cdcd-4dbd-b756-613e587ef391.jpg)
 
 Of course, it's possible to win, as you can see above. Once you won, you get a score based on your performance and the difficulty of the scenario. Next time, you can try to improve your score.
+
+## R / Shiny transcription
+This repository now includes an R Shiny transcription of the contained 1978 BASIC game logic in `superstartrek.bas`.
+
+### Run the Shiny app
+```bash
+Rscript -e "shiny::runApp('app.R')"
+```
+
+### Command format in the app
+Use the original command mnemonics with inline parameters, for example:
+
+- `NAV 8 1`
+- `SRS`
+- `LRS`
+- `PHA 500`
+- `TOR 6`
+- `SHE 400`
+- `DAM`
+- `COM 0`
+- `XXX`
