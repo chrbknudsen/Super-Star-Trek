@@ -643,13 +643,13 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  rv <- reactiveValues(game = NULL, screen = "")
+  rv <- reactiveValues(game = NULL, log = character())
 
   boot <- function() {
     g <- init_game()
     eq <- enter_quadrant(g, new_game = TRUE)
     rv$game <- eq$game
-    rv$screen <- paste("SUPER STAR TREK - 1978 BASIC TRANSCRIPTION", eq$text, sep = "\n\n")
+    rv$log <- c("SUPER STAR TREK - 1978 BASIC TRANSCRIPTION", eq$text)
   }
 
   boot()
@@ -661,20 +661,21 @@ server <- function(input, output, session) {
   observeEvent(input$run, {
     req(rv$game)
     if (rv$game$game_over) {
-      rv$screen <- "GAME OVER. CLICK 'NEW MISSION' TO PLAY AGAIN."
+      rv$log <- c(rv$log, "GAME OVER. CLICK 'NEW MISSION' TO PLAY AGAIN.")
       return()
     }
 
     line <- input$cmd
+    rv$log <- c(rv$log, paste0("> ", line))
     res <- parse_command(rv$game, line)
     rv$game <- res$game
-    rv$screen <- res$text
+    rv$log <- c(rv$log, res$text)
 
     if (rv$game$game_over) {
       if (rv$game$won) {
-        rv$screen <- paste(rv$screen, "MISSION COMPLETE. VICTORY!", sep = "\n")
+        rv$log <- c(rv$log, "MISSION COMPLETE. VICTORY!")
       } else {
-        rv$screen <- paste(rv$screen, sprintf("MISSION FAILED. %d KLINGON BATTLE CRUISERS REMAIN.", rv$game$k_total), sep = "\n")
+        rv$log <- c(rv$log, sprintf("MISSION FAILED. %d KLINGON BATTLE CRUISERS REMAIN.", rv$game$k_total))
       }
     }
 
@@ -682,7 +683,7 @@ server <- function(input, output, session) {
   })
 
   output$console <- renderText({
-    rv$screen
+    paste(tail(rv$log, 120), collapse = "\n")
   })
 }
 
